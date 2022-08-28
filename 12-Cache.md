@@ -1,9 +1,3 @@
----
-title: "Cache Memory"
-author_profile: true
-toc: true
-toc_label: "Table"
----
 
 
 ## Why is **Cache** local Memory Important?
