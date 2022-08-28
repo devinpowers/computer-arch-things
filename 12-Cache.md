@@ -1,11 +1,6 @@
 ---
-permalink: /computer_arch/2/12-Cache
 title: "Cache Memory"
 author_profile: true
-
-header:
-  image: "/images/austin/austin2.jpg"
-
 toc: true
 toc_label: "Table"
 ---
@@ -15,10 +10,10 @@ toc_label: "Table"
 
 When you access memory, a chunks of it are *cached at various levels* (L1, L2, L3). Cache locality refers to the *likelihood of successive operations* being in the cache and thus being *faster*. In an array, you maximize the chances of sequential element access being in the cache.
 
-!["insert"](/images/arch/12/cache1.png)
-!["insert"](/images/arch/12/cache2.png)
-!["insert"](/images/arch/12/cache3.png)
-!["insert"](/images/arch/12/cache4.png)
+!["insert"](/images/cache1.png)
+!["insert"](/images/cache2.png)
+!["insert"](/images/cache3.png)
+!["insert"](/images/cache4.png)
 
 
 ## 1-D Array Example
