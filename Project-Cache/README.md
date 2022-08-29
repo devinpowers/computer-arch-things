@@ -172,58 +172,82 @@ void free_cache() {
 Simulates data access at a given "address" memory address in the Cache.
 If already in Cache, increment hit_cnt
 If not in the Cache, Cache it (set tag), increment miss_cnt
-If a line is evictred, increment evict_cnt
+If a line is evicted, increment evict_cnt
 
 ```c
 void access_data(mem_addr_t addr) {      
-
 
 		// get set and tag
 		mem_addr_t tag = addr >> (s+b);
 		int set = (addr - (tag << (s+b))) >> b;
 
-		// Hit
+		// Hit (Block is in our Cache)
 		for(int i = 0; i < E; i++){
 				if(cache[set][i].valid && cache[set][i].tag == tag){
+
 						hit_cnt++;
+
 						cache[set][i].lru = lru_counter;
+
 						lru_counter++;
+
 						return;
 				}
 		}
 
-		// if the program reaches here, there has been a miss
+		// If not a hit, then it will be a miss!
+
 		miss_cnt++;
 
-		// check if plain miss or miss and eviction
+        // Lets Check the type of Miss (Miss or Miss and Eviction)
+
 		for(int i = 0; i < E; i++){
+
          if(!cache[set][i].valid){ // if only a miss, then a least one line is not valid
-							cache[set][i].valid = 1; // sets validity
-				      cache[set][i].lru = lru_counter; // udates counter
-				      cache[set][i].tag = tag; // updates tag bit
-							return;
+
+					cache[set][i].valid = 1; // sets validity
+
+				    cache[set][i].lru = lru_counter; // udates counter
+
+				    cache[set][i].tag = tag; // updates tag bit
+					
+                    return;
 					}  
      }
 
 		// if program reaches here, then an eviction should occur
-		evict_cnt++;
+	    evict_cnt++;
 
     int change_line = 0; // the line to be changed
+
     // find the line to change
+
     for(int i = 0; i < E; i++){
+
         if(cache[set][i].lru < cache[set][change_line].lru)
+
             change_line = i;
     }
  
 		// Update the values in the line to be changed
-		cache[set][change_line].lru = lru_counter; // updates counter
-		cache[set][change_line].tag = tag; // updtades tag
+
+		cache[set][change_line].lru = lru_counter; // Updates Counter
+
+		cache[set][change_line].tag = tag; // Updates tag
 
 
 }
 ```
 
 ### Replay Trace
+
+Replays the given Trace file against the Cache, and reads the input trace file line by line.
+
+Extracts the type of each memory access : L/S/M
+
+Translate each 'L' as a load i.e. 1 Memory Access
+Translate each 'S' as a store i.e. 1 Memory Access
+Translate each 'M' as a load followed by a store i.e. 2 Memory Access
 
 ```c
 void replay_trace(char* trace_fn) {           
@@ -243,7 +267,6 @@ void replay_trace(char* trace_fn) {
             if (verbosity)
                 printf("%c %llx,%u ", buf[1], addr, len);
 
-            // TODO - MISSING CODE
             // GIVEN: 1. addr has the address to be accessed
             //        2. buf[1] has type of acccess(S/L/M)
             // call access_data function here depending on type of access
@@ -296,8 +319,7 @@ void print_usage(char* argv[]) {
 
 Prints **summary** of the Cache Simulation Statistics of a file passed in. This Function is provided.
 
-```c
-                   
+```c              
 void print_summary(int hits, int misses, int evictions) {        
 
     printf("hits:%d misses:%d evictions:%d\n", hits, misses, evictions);
@@ -374,8 +396,17 @@ int main(int argc, char* argv[]) {
 ### Compile Program with Makefile
 
 ```bash
+CC = gcc
+CFLAGS = -Wall -std=gnu99 -m64 -g
 
+all: csim.c
+	$(CC) $(CFLAGS) -o csim csim.c -lm 
 
+#
+# Clean the src dirctory
+#
+clean:
+	rm -f csim
 ```
 
 **Run the Makefile**
@@ -384,13 +415,44 @@ int main(int argc, char* argv[]) {
 make
 ```
 
+Sould output a `csim` exectuable file in our directory.
 
 
 ### Testing Program
 
-**Complie the Project**
 
 ```bash
-
+./csim
 ```
 
+**Output:**
+
+```bash
+./csim: Missing required command line argument
+Usage: ./csim [-hv] -s <num> -E <num> -b <num> -t <file>
+Options:
+  -h         Print this help message.
+  -v         Optional verbose flag.
+  -s <num>   Number of set index bits.
+  -E <num>   Number of lines per set.
+  -b <num>   Number of block offset bits.
+  -t <file>  Trace file.
+
+Examples:
+  macos>  ./csim -s 4 -E 1 -b 4 -t traces/yi.trace
+  macos>  ./csim -v -s 8 -E 2 -b 4 -t traces/yi.trace
+```
+
+
+**Run with Trace**
+
+```bash
+./csim -s 4 -E 1 -b 4 -t traces/yi.trace
+```
+
+
+**Output:**
+
+```bash
+hits:7 misses:2 evictions:0
+```
