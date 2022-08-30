@@ -1,12 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////
 // Main File:        intdate.c
-// This File:        intdate.c
-// Other Files:      division.c sendsig.c
-// Semester:         CS 354 Fall 2019
-//
-// Author:           Matthew Chiang
-// Email:            mchiang7@wisc.edu
-// CS Login:         mchiang
 //
 //////////////////////////// 80 columns wide ///////////////////////////////////
 
